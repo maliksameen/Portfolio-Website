@@ -269,7 +269,7 @@
   <h2 class="heading">My <span>Projects</span></h2>
 
   <div class="box-container">
-    
+
     <!-- We Keep Notes Project -->
     <div class="box">
       <img src="assets/wekeep.PNG" alt="We Keep Notes">
@@ -277,6 +277,7 @@
         <div class="tag">
           <h3>We Keep Notes</h3>
         </div>
+
         <div class="desc">
           <p>A simple note-taking web app with add, edit and delete features.</p>
           <div class="btns">
@@ -285,16 +286,25 @@
         </div>
       </div>
     </div>
-
-    <!-- Yahan future projects bhi isi tarah add kar sakte ho -->
-
   </div>
 
-  <div class="viewall">
-    <a href="Project1.html" class="btn">
-      <span>View All</span> <i class="fas fa-arrow-right"></i>
-    </a>
+  <!-- Notes Section -->
+  <div id="notes-section" style="display:none; margin-top:20px;">
+    <form id="noteForm">
+      <input type="text" id="noteTitle" placeholder="Note Title" required><br><br>
+      <textarea id="noteContent" placeholder="Write your note..." required></textarea><br><br>
+      <button type="submit">Save Note</button>
+    </form>
   </div>
+
+  <!-- Notes List -->
+  <ul id="notesList"></ul>
+
+  <!-- Add Note Button -->
+  <div style="margin-top:20px;">
+    <button onclick="showNotesSection()">Add Note</button>
+  </div>
+
 </section>
 
 <!-- work project section ends -->
@@ -444,6 +454,7 @@
 <script src="notes.js"></script>
 </body>
 </html>
+
 
 
 
