@@ -1,50 +1,79 @@
-// Add new note button par click hone par naya note create hoga
-document.getElementById("addBtn").addEventListener("click", function () {
-  let notesContainer = document.getElementById("notesContainer");
+const addBtn = document.getElementById('addBtn');
 
-  // Note ka outer div
-  let note = document.createElement("div");
-  note.classList.add(
-    "note",
-    "h-52",
-    "p-2",
-    "bg-purple-800",
-    "rounded",
-    "flex",
-    "flex-col",
-    "shadow-lg",
-    "border-b-4",
-    "border-yellow-400"
-  );
+const updateNote = () => {
+    const textAreaData = document.querySelectorAll('textarea')
+    const notes = [];
+    textAreaData.forEach((note) => {
+        if(note.value != ""){
+        return notes.push(note.value);
+        }
+    });
+    localStorage.setItem('notes', JSON.stringify(notes));
+}
 
-  // Edit/Delete buttons wala div
-  let operation = document.createElement("div");
-  operation.classList.add("operation", "p-0.5", "flex", "justify-end", "gap-2", "mb-0.5");
+const addNewNote = (txt = '') => {
 
-  let editBtn = document.createElement("button");
-  editBtn.classList.add("material-icons-round", "edit", "bg-green-400", "p-1", "rounded", "hover:bg-green-600", "hover:text-white");
-  editBtn.textContent = "edit_note";
+    const notesContainer = document.getElementById('notesContainer');
+    const note = document.createElement('div');
+    const classes = ['note','h-52','p-2','bg-purple-800','rounded','flex','flex-col','shadow-lg','border-b-4','border-yellow-400'];
+    note.classList.add(...classes);
 
-  let deleteBtn = document.createElement("button");
-  deleteBtn.classList.add("material-icons-round", "delete", "bg-red-600", "text-white", "p-1", "rounded", "hover:bg-red-700");
-  deleteBtn.textContent = "delete";
+    const htmlData = `
+        <div class="operation p-0.5 flex justify-end gap-2 mb-0.5">
+            <button class="material-icons-round edit bg-green-400 p-1 rounded hover:bg-green-600 hover:text-white transition-colors duration-75">${txt ? "edit_note" : "done" }</button>
+            <button class="material-icons-round delete bg-red-600 text-white p-1 rounded hover:bg-red-700 transition-colors duration-75">delete</button>
+        </div>
 
-  operation.appendChild(editBtn);
-  operation.appendChild(deleteBtn);
+        <div class="noteTxt p-1 overflow-y-auto pb-4 text-white ${txt ? "" : "hidden" }"></div>
+        <textarea class="p-1 outline-none border border-yellow-500 rounded resize-none w-full placeholder-gray-500 ${txt ? "hidden" : "" }" rows="6" placeholder="Type your note.."></textarea>`;
 
-  // Note text area
-  let noteTxt = document.createElement("div");
-  noteTxt.classList.add("noteTxt", "p-1", "overflow-y-auto", "pb-4", "text-white");
+    note.insertAdjacentHTML('afterbegin',htmlData);
 
-  let textarea = document.createElement("textarea");
-  textarea.classList.add("p-1", "outline-none", "border", "border-yellow-500", "rounded", "resize-none", "w-full", "placeholder-gray-500");
-  textarea.setAttribute("rows", "6");
-  textarea.setAttribute("placeholder", "Type your note..");
+    const editBtn = note.querySelector('.edit');
+    const delBtn = note.querySelector('.delete');
+    const noteTxt = note.querySelector('.noteTxt');
+    const textArea = note.querySelector('textarea');
 
-  // Append sabko
-  note.appendChild(operation);
-  note.appendChild(noteTxt);
-  note.appendChild(textarea);
+    // delete note 
+    delBtn.addEventListener('click', () => {
+        note.classList.add('animate-ping','opacity-30');
+        setTimeout(() => {
+            note.remove();
+            updateNote();
+        }, 200);
+    });
 
-  notesContainer.appendChild(note);
-});
+    textArea.value = txt;
+    noteTxt.innerHTML = txt;
+
+    // edit btn event 
+    editBtn.addEventListener('click', () => {
+        noteTxt.classList.toggle('hidden');
+        textArea.classList.toggle('hidden');
+        if(textArea.classList.contains('hidden')) {
+            editBtn.textContent = "edit_note";
+        } else {
+            editBtn.textContent = "done";
+        }
+        updateNote();
+    });
+
+    textArea.addEventListener('change', (event) => {
+        const value = event.target.value;
+        noteTxt.innerHTML = value;
+        if(note.value != ""){
+            updateNote();
+        }
+    });
+
+    notesContainer.appendChild(note);
+}
+
+// fetch stored notes from localstorage
+const notes = JSON.parse(localStorage.getItem('notes'));
+if(notes) {
+    notes.forEach((note) => addNewNote(note));
+}
+
+// add new note btn event 
+addBtn.addEventListener('click', () => addNewNote() );
